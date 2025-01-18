@@ -4,15 +4,24 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- master
+  branches:
+    include:
+    - '*'  # This triggers the pipeline on all branches.
+pr:
+  branches:
+    include:
+    - '*'
+
+variables:
+  NODE_VERSION: '20.x'  # Node.js version to use.
 
 pool:
-  vmImage: ubuntu-latest
+  name: PoolRunners
 
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: '20.x'
+    versionSpec: $(NODE_VERSION)
   displayName: 'Install Node.js'
 
 - script: |
