@@ -37,10 +37,6 @@ stages:
         npm audit --prod  # Audit the production dependencies for vulnerabilities.
       displayName: 'Audit the code'  # Display name for the step.
 
-    - script: |
-        export VAR_BUILD_ID=$(Build.BuildID)  # Save the build ID to a variable.
-        echo 'Build ID: $VAR_BUILD_ID'  # Output the build ID.
-      displayName: 'Save Build ID'  # Display name for the step.
 
 - stage:
   displayName: 'Build&Push docker image'  # Display name for the stage.
