@@ -19,7 +19,7 @@ pool:
 
 
 stages:
-- stage: PR-Check
+- stage: PRCheck
   displayName: 'Install-Build-Audit'
   jobs:
   - job: Install-Build-Audit
