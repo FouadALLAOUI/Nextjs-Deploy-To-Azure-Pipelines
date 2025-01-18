@@ -7,6 +7,7 @@ pool:
 
 variables:
   IMAGE_NAME: 'nextjsbaseapp'
+  ACR_NAME: 'acrnostrad'
   DOCKER_IMAGE_TAG: $(Build.BuildID)
   DOCKERHUB_USER: 'fouadallaoui'
   NODE_VERSION: '20.x'
