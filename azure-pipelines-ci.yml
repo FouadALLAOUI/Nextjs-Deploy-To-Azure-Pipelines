@@ -34,14 +34,24 @@ stages:
     - script: |
         npm test || echo 'Script not found'  # Run tests, handle missing script.
       displayName: 'Test the code'  # Display name for the step.
-    
-    - script: |
-        npm run build --prod  # Build the project for production.
-      displayName: 'Build the code'  # Display name for the step.
-    
+
     - script: |
         npm audit --prod  # Audit the production dependencies for vulnerabilities.
       displayName: 'Audit the code'  # Display name for the step.
+    
+    - script: |
+        npm run build --prod  # Build the project for production.
+        mkdir -p $(Build.ArtifactStagingDirectory)
+        cp -R .next/* $(Build.ArtifactStagingDirectory)/  # Copy built files to the staging directory.
+      displayName: 'Build the code'  # Display name for the step.
+    
+    # Publish the build artifacts for further stages or analysis.
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: $(Build.ArtifactStagingDirectory)
+        artifactName: 'drop'
+      displayName: 'Publish build artifacts'
+
 
 # Build and push the docker image
 - stage: DockerBuildAndPush

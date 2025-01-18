@@ -1,0 +1,26 @@
+trigger: none
+pr: none
+
+
+pool:
+  name: PoolRunners
+
+variables:
+  IMAGE_NAME: 'nextjsbaseapp'
+  ACR_NAME: 'acrnostrad'
+  NODE_VERSION: '20.x'
+
+
+stages:
+
+# Validate the state of the project in the branch
+- stage: validation  # Define a stage for validation.
+  displayName: 'Validation'  # Display name for the stage.
+  jobs:
+  - job: Install_Build_Audit  # Job for installing dependencies and building the project.
+    displayName: 'Install Dependencies & Build'  # Display name for the job.
+    steps:
+    - task: NodeTool@0  # Task to install Node.js.
+      inputs:
+        versionSpec: $(NODE_VERSION)  # Use the specified Node.js version.
+      displayName: 'Install Node.js'  # Display name for the step.
