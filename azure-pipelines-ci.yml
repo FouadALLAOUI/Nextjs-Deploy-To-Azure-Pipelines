@@ -67,9 +67,9 @@ stages:
 
       - script: |
           echo "Removing old Docker images..."
-          docker rmi -f $(IMAGE_NAME):$(Build.BuildID) || echo "No old image found."
+          docker rmi -f $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) || echo "No old image found."
         displayName: 'Clean Up Old Docker Images'  # Display name for the cleanup step.
-        
+
       - script: |
           echo "Docker image $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) successfully built and pushed."
         displayName: 'Success Notification'  # Display name for logging success.
