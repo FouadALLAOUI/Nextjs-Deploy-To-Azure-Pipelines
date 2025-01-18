@@ -20,9 +20,9 @@ pool:
 
 stages:
 - stage: PRCheck
-  displayName: 'Install-Build-Audit'
+  displayName: 'Install Build Audit'
   jobs:
-  - job: Install-Build-Audit
+  - job: Install Build Audit
     displayName: 'Install Dependencies & Build'
     steps:
     - task: NodeTool@0
