@@ -39,39 +39,34 @@ stages:
       displayName: 'Audit the code'  # Display name for the step.
 
 - stage:
-    displayName: 'Build & Push Docker Image'  # Display name for the stage.
-    dependsOn: validation  # Depends on the validation stage.
-    jobs:
-    - job: Build_And_Push_Docker_Image  # Job for building and pushing Docker image.
-      displayName: 'Build and Push Docker Image'  # Display name for the job.
-      steps:
-      - task: UseDocker@1  # Ensure Docker is available on the agent.
-        displayName: 'Set up Docker'
-
-      - script: |
-          echo "Building Docker Image..."
-          docker build --no-cache -t $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) .
-        displayName: 'Build Docker Image'  # Display name for the build step.
-
-      - script: |
-          echo "Listing Docker Images..."
-          docker images
-        displayName: 'List Docker Images'  # Display name for the image listing step.
-
-      - task: Docker@2  # Use the Docker task for pushing to DockerHub.
-        displayName: 'Push Docker Image to DockerHub'  # Display name for the push step.
-        inputs:
-          containerRegistry: 'DockerHub'  # Service connection to DockerHub.
-          command: 'push'
-          arguments: '$(IMAGE_NAME):$(DOCKER_IMAGE_TAG)'
-
-      - script: |
-          echo "Removing old Docker images..."
-          docker rmi -f $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) || echo "No old image found."
-        displayName: 'Clean Up Old Docker Images'  # Display name for the cleanup step.
-
-      - script: |
-          echo "Docker image $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) successfully built and pushed."
-        displayName: 'Success Notification'  # Display name for logging success.
+  displayName: 'Build & Push Docker Image'  # Display name for the stage.
+  dependsOn: validation  # Depends on the validation stage.
+  jobs:
+  - job: Build_And_Push_Docker_Image  # Job for building and pushing Docker image.
+    displayName: 'Build and Push Docker Image'  # Display name for the job.
+    steps:
+    - task: UseDocker@1  # Ensure Docker is available on the agent.
+      displayName: 'Set up Docker'
+    - script: |
+        echo "Building Docker Image..."
+        docker build --no-cache -t $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) .
+      displayName: 'Build Docker Image'  # Display name for the build step.
+    - script: |
+        echo "Listing Docker Images..."
+        docker images
+      displayName: 'List Docker Images'  # Display name for the image listing step.
+    - task: Docker@2  # Use the Docker task for pushing to DockerHub.
+      displayName: 'Push Docker Image to DockerHub'  # Display name for the push step.
+      inputs:
+        containerRegistry: 'DockerHub'  # Service connection to DockerHub.
+        command: 'push'
+        arguments: '$(IMAGE_NAME):$(DOCKER_IMAGE_TAG)'
+    - script: |
+        echo "Removing old Docker images..."
+        docker rmi -f $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) || echo "No old image found."
+      displayName: 'Clean Up Old Docker Images'  # Display name for the cleanup step.
+    - script: |
+        echo "Docker image $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) successfully built and pushed."
+      displayName: 'Success Notification'  # Display name for logging success.
 
 
