@@ -38,8 +38,24 @@ stages:
       displayName: 'Audit the code'  # Display name for the step.
 
     - script: |
-        VAR_BUILD_ID = $(Build.BuildID)  # Save the build ID to a variable.
+        export VAR_BUILD_ID=$(Build.BuildID)  # Save the build ID to a variable.
         echo 'Build ID: $VAR_BUILD_ID'  # Output the build ID.
       displayName: 'Save Build ID'  # Display name for the step.
+
+- stage:
+  displayName: 'Build&Push docker image'  # Display name for the stage.
+  dependsOn: validation  # The stage depends on the validation stage.
+  jobs:
+  - job: Build_Docker_Image  # Job for building the Docker image.
+    displayName: 'Build Docker Image'  # Display name for the job.
+    steps:
+    - script: |
+        docker build --no-cache -t $(IMAGE_NAME):$(Build.BuildID) .
+      displayName: 'Build Docker Image'  # Display name for the step.
+
+    - script: |
+        docker rmi -f $(IMAGE_NAME):$(Build.BuildID)
+      displayName: 'Remove old Docker Image'  # Display name for the step.
+
 
 
