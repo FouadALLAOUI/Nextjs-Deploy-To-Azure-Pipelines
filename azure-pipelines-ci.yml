@@ -43,7 +43,7 @@ stages:
       displayName: 'Audit the code'  # Display name for the step.
 
 # Build and push the docker image
-- stage:
+- stage: DockerBuildAndPush
   displayName: 'Build & Push Docker Image'  # Display name for the stage.
   dependsOn: validation  # Depends on the validation stage.
   jobs:
@@ -105,7 +105,7 @@ stages:
         # Verify the Docker build cache 
         echo "Re-Checking Docker build cache..."
         docker system df
-        
+
         # Force remove the Docker build cache
         echo "Removing Docker build cache..."
         docker system prune -a -f
