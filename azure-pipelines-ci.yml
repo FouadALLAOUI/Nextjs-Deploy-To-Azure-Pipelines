@@ -98,7 +98,27 @@ stages:
         echo "Docker image $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) successfully built and pushed."
       displayName: 'Success Notification'  # Display name for logging success.
 
+    - script: |
+        echo "Building Docker Image..."
+        docker build --no-cache -t $(ACR_NAME).azurecr.io/$(IMAGE_NAME):$(DOCKER_IMAGE_TAG) .
+      displayName: 'Build Docker Image for ACR'
+    
+    - script: |
+        echo "Listing Docker Images..."
+        docker images
+      displayName: 'List Docker Images'  # Display name for the image listing step.
+
+    - task: Docker@2
+      displayName: 'Push Docker Image to ACR'
+      inputs:
+        containerRegistry: 'AzureContainerRegistry'  # Name of your ACR service connection.
+        repository: '$(ACR_NAME).azurecr.io/$(IMAGE_NAME)'  # ACR repository name.
+        command: 'push'
+        tags: |
+          $(DOCKER_IMAGE_TAG)
+
   - job:
+    dependsOn: Build_And_Push_Docker_Image
     displayName: 'Clean Up Docker Images & Cache'
     steps:
     - script: |
