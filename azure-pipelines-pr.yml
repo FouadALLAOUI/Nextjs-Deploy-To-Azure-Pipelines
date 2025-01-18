@@ -19,8 +19,8 @@ pool:
 
 
 stages:
-- stage: PRCheck
-  displayName: 'Install Build Audit'
+- stage: Check
+  displayName: 'Checking Stage'
   jobs:
   - job: Install Build Audit
     displayName: 'Install Dependencies & Build'
