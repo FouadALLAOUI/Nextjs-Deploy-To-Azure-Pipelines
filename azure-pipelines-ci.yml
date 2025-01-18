@@ -10,8 +10,8 @@ variables:
   NODE_VERSION: '20.x'
 
 stages:
-- stage: CICheck
-  displayName: 'Install-Build-Audit'
+- stage: validation
+  displayName: 'Validation'
   jobs:
   - job: Install-Build-Audit
     displayName: 'Install Dependencies & Build'

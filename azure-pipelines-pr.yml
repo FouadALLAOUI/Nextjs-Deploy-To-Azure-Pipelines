@@ -19,10 +19,10 @@ pool:
 
 
 stages:
-- stage: Check
-  displayName: 'Checking Stage'
+- stage: validation
+  displayName: 'Validation'
   jobs:
-  - job: Install Build Audit
+  - job: Install_Build_Audit
     displayName: 'Install Dependencies & Build'
     steps:
     - task: NodeTool@0
