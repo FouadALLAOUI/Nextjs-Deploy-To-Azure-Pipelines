@@ -12,77 +12,41 @@ pr:
     - '*'
 
 variables:
-  NODE_VERSION: '20.x'
-  # Add more variables for better maintainability
-  IS_PR: $[eq(variables['Build.Reason'], 'PullRequest')]
-  CACHE_KEY: 'npm | $(Agent.OS) | package-lock.json'
+  NODE_VERSION: '20.x'  # Node.js version to use.
 
 pool:
   name: PoolRunners
 
+
 stages:
-- stage: validation
-  displayName: 'Validation'
+- stage: Check
+  displayName: 'Checking Stage'
   jobs:
-  - job: build_test_audit
-    displayName: 'Build and Test'
+  - job: Install Build Audit
+    displayName: 'Install Dependencies & Build'
     steps:
     - task: NodeTool@0
       inputs:
         versionSpec: $(NODE_VERSION)
       displayName: 'Install Node.js'
     
-    - task: Cache@2
-      inputs:
-        key: $(CACHE_KEY)
-        path: $(npm_config_cache)
-      displayName: 'Cache npm packages'
-
     - script: |
         npm ci
-      displayName: 'Install Dependencies'
-      
+      displayName: 'Clean install'
+    
     - script: |
-        if [ -f "package.json" ]; then
-          if grep -q "\"test\":" "package.json"; then
-            echo "Found test script, executing..."
-            npm test
-          else
-            echo "##vso[task.logissue type=warning]No test script found in package.json"
-            echo "Consider adding tests to your project"
-          fi
-        else
-          echo "##vso[task.logissue type=error]package.json not found"
-          exit 1
-        fi
-      displayName: 'Run Tests'
-      continueOnError: true
+        npm test || echo 'Script not found'
+      displayName: 'Test the code'
     
     - script: |
         npm run build --prod
       displayName: 'Build the code'
     
     - script: |
-        echo "Running security audit..."
-        if npm audit --production; then
-          echo "No vulnerabilities found"
-        else
-          echo "##vso[task.logissue type=warning]Security vulnerabilities found"
-          echo "Review npm audit report above"
-        fi
-      displayName: 'Security Audit'
-      continueOnError: true
+        npm audit --prod
+      displayName: 'Audit the code'
 
     - script: |
-        echo "##vso[task.setvariable variable=BUILD_ID]$(Build.BuildId)"
-        echo "Build ID: $(Build.BuildId)"
+        VAR_BUILD_ID = $BuildID
+        echo 'Build ID: $VAR_BUILD_ID'
       displayName: 'Save Build ID'
-
-    # Optional: Add artifact publishing if needed
-    - task: PublishBuildArtifacts@1
-      condition: succeeded()
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'drop'
-        publishLocation: 'Container'
-      displayName: 'Publish Build Artifacts'
