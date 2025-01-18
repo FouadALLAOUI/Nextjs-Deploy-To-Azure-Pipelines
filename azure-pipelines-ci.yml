@@ -10,33 +10,36 @@ variables:
   NODE_VERSION: '20.x'
 
 stages:
-- stage: validation
-  displayName: 'Validation'
+- stage: validation  # Define a stage for validation.
+  displayName: 'Validation'  # Display name for the stage.
   jobs:
-  - job: Install-Build-Audit
-    displayName: 'Install Dependencies & Build'
+  - job: Install_Build_Audit  # Job for installing dependencies and building the project.
+    displayName: 'Install Dependencies & Build'  # Display name for the job.
     steps:
-    - task: NodeTool@0
+    - task: NodeTool@0  # Task to install Node.js.
       inputs:
-        versionSpec: $(NODE_VERSION)
-      displayName: 'Install Node.js'
+        versionSpec: $(NODE_VERSION)  # Use the specified Node.js version.
+      displayName: 'Install Node.js'  # Display name for the step.
     
     - script: |
-        npm ci
-      displayName: 'Clean install'
+        npm ci  # Clean install of dependencies.
+      displayName: 'Clean install'  # Display name for the step.
     
     - script: |
-        npm test || echo 'Script not found'
-      displayName: 'Test the code'
+        npm test || echo 'Script not found'  # Run tests, handle missing script.
+      displayName: 'Test the code'  # Display name for the step.
     
     - script: |
-        npm run build --prod
-      displayName: 'Build the code'
+        npm run build --prod  # Build the project for production.
+      displayName: 'Build the code'  # Display name for the step.
     
     - script: |
-        npm audit --prod
-      displayName: 'Audit the code'
+        npm audit --prod  # Audit the production dependencies for vulnerabilities.
+      displayName: 'Audit the code'  # Display name for the step.
 
-
+    - script: |
+        VAR_BUILD_ID = $(Build.BuildID)  # Save the build ID to a variable.
+        echo 'Build ID: $VAR_BUILD_ID'  # Output the build ID.
+      displayName: 'Save Build ID'  # Display name for the step.
 
 

@@ -46,6 +46,16 @@ stages:
       displayName: 'Audit the code'  # Display name for the step.
 
     - script: |
-        VAR_BUILD_ID = $(Build.BuildID)  # Save the build ID to a variable.
+        export VAR_BUILD_ID = $(Build.BuildID)  # Save the build ID to a variable.
         echo 'Build ID: $VAR_BUILD_ID'  # Output the build ID.
       displayName: 'Save Build ID'  # Display name for the step.
+
+    - script: |
+        echo $VAR_BUILD_ID
+      displayName: 'Set BuildId'
+
+    - script: |
+        export VAR_RELEASE_NOTES = $(Build.SourceBranchName)_$(Build.BuildId)  # Save the release notes to a variable.
+        echo 'Release notes: $VAR_RELEASE_NOTES'  # Output the release notes.
+      displayName: 'Save Release Notes'  # Display name for the step.
+
