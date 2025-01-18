@@ -59,8 +59,14 @@ stages:
     - script: |
         echo "Tagging Docker Image for DockerHub..."
         docker tag $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) $(DOCKERHUB_USER)/$(IMAGE_NAME):$(DOCKER_IMAGE_TAG)
+        docker tag $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) $(DOCKERHUB_USER)/$(IMAGE_NAME):latest
       displayName: 'Tag Docker Image'
 
+    - script: |
+        echo "Listing Docker Images..."
+        docker images
+      displayName: 'List Docker Images'  # Display name for the image listing step.
+      
     - task: Docker@2
       displayName: 'Push Docker Image to DockerHub'
       inputs:
