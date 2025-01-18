@@ -11,7 +11,10 @@ variables:
   DOCKERHUB_USER: 'fouadallaoui'
   NODE_VERSION: '20.x'
 
+
 stages:
+
+# Validate the state of the project in the branch
 - stage: validation  # Define a stage for validation.
   displayName: 'Validation'  # Display name for the stage.
   jobs:
@@ -39,6 +42,7 @@ stages:
         npm audit --prod  # Audit the production dependencies for vulnerabilities.
       displayName: 'Audit the code'  # Display name for the step.
 
+# Build and push the docker image
 - stage:
   displayName: 'Build & Push Docker Image'  # Display name for the stage.
   dependsOn: validation  # Depends on the validation stage.
@@ -66,7 +70,7 @@ stages:
         echo "Listing Docker Images..."
         docker images
       displayName: 'List Docker Images'  # Display name for the image listing step.
-      
+
     - task: Docker@2
       displayName: 'Push Docker Image to DockerHub'
       inputs:
@@ -94,4 +98,43 @@ stages:
         echo "Docker image $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) successfully built and pushed."
       displayName: 'Success Notification'  # Display name for logging success.
 
+  - job:
+    displayName: 'Clean Up Docker Images & Cache'
+    steps:
+    - script: |
+        # Verify the Docker build cache 
+        echo "Re-Checking Docker build cache..."
+        docker system df
+        
+        # Force remove the Docker build cache
+        echo "Removing Docker build cache..."
+        docker system prune -a -f
+        docker image prune -a -f
+        docker images 
+
+        # Verify the Docker build cache 
+        echo "Re-Checking Docker build cache..."
+        docker system df
+      displayName: 'Check Docker build cache'
+
+
+# Publish Image Tag
+- stage: PublishImageTag
+  displayName: 'Publish Image Tag'
+  dependsOn: DockerBuildAndPush
+  jobs:
+  - job: PublishTag
+    displayName: 'Publish Image Tag as Artifact'
+    steps:
+    # Save the image tag to a file
+    - script: |
+        echo $(DOCKER_IMAGE_TAG) > $(Build.ArtifactStagingDirectory)/imageTag.txt
+      displayName: 'Save Image Tag to File'
+
+    # Publish the image tag as an artifact
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: $(Build.ArtifactStagingDirectory)
+        artifactName: 'ImageTag'
+      displayName: 'Publish Image Tag Artifact'
 
