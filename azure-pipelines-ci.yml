@@ -10,7 +10,7 @@ variables:
   NODE_VERSION: '20.x'
 
 stages:
-- stage: PR-Check
+- stage: CICheck
   displayName: 'Install-Build-Audit'
   jobs:
   - job: Install-Build-Audit
