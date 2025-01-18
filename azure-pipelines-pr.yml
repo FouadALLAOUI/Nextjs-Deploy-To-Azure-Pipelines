@@ -4,9 +4,8 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-  branches:
-    include:
-    - '*'  # This triggers the pipeline on all branches.
+- master
+
 pr:
   branches:
     include:
