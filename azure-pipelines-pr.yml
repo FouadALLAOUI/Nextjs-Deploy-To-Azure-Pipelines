@@ -46,6 +46,6 @@ stages:
       displayName: 'Audit the code'  # Display name for the step.
 
     - script: |
-        VAR_BUILD_ID = $BuildID  # Save the build ID to a variable.
+        VAR_BUILD_ID = $(Build.BuildID)  # Save the build ID to a variable.
         echo 'Build ID: $VAR_BUILD_ID'  # Output the build ID.
       displayName: 'Save Build ID'  # Display name for the step.
