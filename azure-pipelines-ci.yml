@@ -45,8 +45,6 @@ stages:
   - job: Build_And_Push_Docker_Image  # Job for building and pushing Docker image.
     displayName: 'Build and Push Docker Image'  # Display name for the job.
     steps:
-    - task: UseDocker@1  # Ensure Docker is available on the agent.
-      displayName: 'Set up Docker'
     - script: |
         echo "Building Docker Image..."
         docker build --no-cache -t $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) .
