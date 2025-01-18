@@ -17,26 +17,36 @@ variables:
 pool:
   name: PoolRunners
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: $(NODE_VERSION)
-  displayName: 'Install Node.js'
 
-- script: |
-    npm ci
-  displayName: 'Clean install'
+stages:
+- stage: PR-Check
+  displayName: 'Install-Build-Audit'
+  jobs:
+  - job: Install-Build-Audit
+    displayName: 'Install Dependencies & Build'
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: $(NODE_VERSION)
+      displayName: 'Install Node.js'
+    
+    - script: |
+        npm ci
+      displayName: 'Clean install'
+    
+    - script: |
+        npm test || echo 'Script not found'
+      displayName: 'Test the code'
+    
+    - script: |
+        npm run build --prod
+      displayName: 'Build the code'
+    
+    - script: |
+        npm audit --prod
+      displayName: 'Audit the code'
 
-- script: |
-    npm test || echo 'Script not found'
-  displayName: 'Test the code'
-
-- script: |
-    npm run build --prod
-  displayName: 'Build the code'
-
-- script: |
-    npm audit --prod
-  displayName: 'Audit the code'
-
-
+    - script: |
+        VAR_BUILD_ID = $BuildID
+        echo 'Build ID: $VAR_BUILD_ID'
+      displayName: 'Save Build ID'
