@@ -15,7 +15,7 @@ export default function Home() {
         </h1>
 
         <h1 className={styles.title}>
-          Welcome to Nostrad
+          Welcome to 70
         </h1>
 
         <p className={styles.description}>
