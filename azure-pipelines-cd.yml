@@ -42,7 +42,7 @@ stages:
         packageForLinux: '$(Pipeline.Workspace)/CI_Pipeline/NextjsBuild'
         enableCustomDeployment: false
         DeploymentType: 'zipDeploy'
-        StartupCommand: 'npm start'
+        StartupCommand: 'cd /home/site/wwwroot && npm install --production && npm start'
 
     # Download the image tag artifact from CI pipeline
     #- download: CI_Pipeline

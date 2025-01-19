@@ -52,6 +52,8 @@ stages:
         npm run build --prod
         mkdir -p $(Build.ArtifactStagingDirectory)
         cp -R .next/* $(Build.ArtifactStagingDirectory)/
+        cp package.json $(Build.ArtifactStagingDirectory)/
+        cp package-lock.json $(Build.ArtifactStagingDirectory)/
       displayName: 'Build the code'
 
     - task: PublishBuildArtifacts@1
