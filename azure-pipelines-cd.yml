@@ -28,10 +28,12 @@ stages:
   - job: DeployToAzure
     displayName: 'Deploy Docker Image to Azure Web App'
     steps:
+
     # Download the image tag artifact from CI pipeline
     - download: CI_Pipeline
       artifact: 'ImageTag'
       displayName: 'Download Image Tag'
+
     # Read the image tag from the file
     - task: Bash@3
       displayName: 'Set Image Tag Variable'
@@ -41,6 +43,7 @@ stages:
           IMAGE_TAG=$(cat $(Pipeline.Workspace)/CI_Pipeline/ImageTag/imageTag.txt)
           echo "##vso[task.setvariable variable=DOCKER_IMAGE_TAG]$IMAGE_TAG"
           echo $(DOCKER_IMAGE_TAG)
+          
     # Deploy to Azure Web App
     - task: AzureWebAppContainer@1
       displayName: 'Deploy to Azure Web App'
