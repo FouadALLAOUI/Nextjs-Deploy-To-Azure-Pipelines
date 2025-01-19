@@ -117,10 +117,10 @@ stages:
         echo "Docker image $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) successfully built and pushed."
       displayName: 'Success Notification'  # Display name for logging success.
 
-    - script: |
-        echo "Building Docker Image..."
-        docker build --no-cache -t $(ACR_NAME).azurecr.io/$(IMAGE_NAME):$(DOCKER_IMAGE_TAG) .
-      displayName: 'Build Docker Image for ACR'
+    #- script: |
+    #    echo "Building Docker Image..."
+    #    docker build --no-cache -t $(ACR_NAME).azurecr.io/$(IMAGE_NAME):$(DOCKER_IMAGE_TAG) .
+    #  displayName: 'Build Docker Image for ACR'
     
     - script: |
         echo "Listing Docker Images..."
