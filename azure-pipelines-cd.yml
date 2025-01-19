@@ -34,22 +34,22 @@ stages:
         versionSpec: '20.x'
       displayName: 'Install Node.js'
 
-    - task: Cache@2
-      inputs:
-        key: 'npm | "$(Agent.OS)" | package-lock.json'
-        restoreKeys: |
-          npm | "$(Agent.OS)"
-        path: $(npm_config_cache)
-      displayName: 'Cache npm'
+    #- task: Cache@2
+    #  inputs:
+    #    key: 'npm | "$(Agent.OS)" | package-lock.json'
+    #    restoreKeys: |
+    #      npm | "$(Agent.OS)"
+    #    path: $(npm_config_cache)
+    #  displayName: 'Cache npm'
 
     - script: npm ci
       displayName: 'Install and remove cached node_modules'
 
-    - task: Cache@2
-      inputs:
-        key: next | "$(Agent.OS)" | package-lock.json
-        path: '$(System.DefaultWorkingDirectory)/.next/cache'
-      displayName: 'Cache .next/cache'
+    #- task: Cache@2
+    #  inputs:
+    #    key: next | "$(Agent.OS)" | package-lock.json
+    #    path: '$(System.DefaultWorkingDirectory)/.next/cache'
+    #  displayName: 'Cache .next/cache'
 
     - script: npm run build
       displayName: 'Build'
