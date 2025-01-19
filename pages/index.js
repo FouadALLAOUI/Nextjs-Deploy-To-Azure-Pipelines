@@ -15,7 +15,7 @@ export default function Home() {
         </h1>
 
         <h1 className={styles.title}>
-          Welcome to 7071
+          Welcome to RIO
         </h1>
 
         <p className={styles.description}>
