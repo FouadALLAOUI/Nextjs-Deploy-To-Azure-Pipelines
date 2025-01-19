@@ -1,6 +1,15 @@
 trigger: none
 pr: none
 
+resources:
+  pipelines:
+  - pipeline: PR_Pipeline  # Reference to PR pipeline
+    source: PR-Nextjs-Deploy-To-Azure-Pipelines  # PR pipeline name
+    trigger: 
+      branches:
+        include:
+          - master  # Or your target branch
+
 
 pool:
   name: PoolRunners
@@ -40,18 +49,17 @@ stages:
       displayName: 'Audit the code'  # Display name for the step.
     
     - script: |
-        npm run build --prod  # Build the project for production.
+        npm run build --prod
         mkdir -p $(Build.ArtifactStagingDirectory)
-        cp -R .next/* $(Build.ArtifactStagingDirectory)/  # Copy built files to the staging directory.
-      displayName: 'Build the code'  # Display name for the step.
-    
-    # Publish the build artifacts for further stages or analysis.
+        cp -R .next/* $(Build.ArtifactStagingDirectory)/
+      displayName: 'Build the code'
+
     - task: PublishBuildArtifacts@1
       inputs:
         pathToPublish: $(Build.ArtifactStagingDirectory)
-        artifactName: 'drop'
-      displayName: 'Publish build artifacts'
-
+        artifactName: 'NextjsBuild'
+        publishLocation: 'Container'
+      displayName: 'Publish Build Artifacts'
 
 # Build and push the docker image
 - stage: DockerBuildAndPush
