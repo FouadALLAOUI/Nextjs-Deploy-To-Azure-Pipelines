@@ -25,44 +25,38 @@ stages:
 - stage: Deploy
   displayName: 'Deploy to Azure Web App'
   jobs:
-  - deployment: DeployToAzure
+  - job: DeployToAzure
     displayName: 'Deploy Docker Image to Azure Web App'
-    environment: 'production'  # Create this environment in Azure DevOps
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          # Download the image tag artifact from CI pipeline
-          - download: CI_Pipeline
-            artifact: 'ImageTag'
-            displayName: 'Download Image Tag'
-
-          # Read the image tag from the file
-          - task: Bash@3
-            displayName: 'Set Image Tag Variable'
-            inputs:
-              targetType: 'inline'
-              script: |
-                IMAGE_TAG=$(cat $(Pipeline.Workspace)/CI_Pipeline/ImageTag/imageTag.txt)
-                echo "##vso[task.setvariable variable=DOCKER_IMAGE_TAG]$IMAGE_TAG"
-                echo $(DOCKER_IMAGE_TAG)
-
-          # Deploy to Azure Web App
-          - task: AzureWebAppContainer@1
-            displayName: 'Deploy to Azure Web App'
-            inputs:
-              azureSubscription: 'WebAppService'  # Your Azure service connection name
-              appName: '$(AZURE_WEBAPP_NAME)'
-              containers: '$(DOCKERHUB_USER)/$(IMAGE_NAME):$(DOCKER_IMAGE_TAG)'
-              
-          # Verify deployment
-          - task: AzureCLI@2
-            displayName: 'Verify Deployment'
-            inputs:
-              azureSubscription: 'WebAppService'
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                echo "Verifying deployment status..."
-                az webapp restart --name $(AZURE_WEBAPP_NAME) --resource-group your-resource-group-name
-                az webapp show --name $(AZURE_WEBAPP_NAME) --resource-group your-resource-group-name --query state
+    steps:
+    # Download the image tag artifact from CI pipeline
+    - download: CI_Pipeline
+      artifact: 'ImageTag'
+      displayName: 'Download Image Tag'
+    # Read the image tag from the file
+    - task: Bash@3
+      displayName: 'Set Image Tag Variable'
+      inputs:
+        targetType: 'inline'
+        script: |
+          IMAGE_TAG=$(cat $(Pipeline.Workspace)/CI_Pipeline/ImageTag/imageTag.txt)
+          echo "##vso[task.setvariable variable=DOCKER_IMAGE_TAG]$IMAGE_TAG"
+          echo $(DOCKER_IMAGE_TAG)
+    # Deploy to Azure Web App
+    - task: AzureWebAppContainer@1
+      displayName: 'Deploy to Azure Web App'
+      inputs:
+        azureSubscription: 'WebAppService'  # Your Azure service connection name
+        appName: '$(AZURE_WEBAPP_NAME)'
+        containers: '$(DOCKERHUB_USER)/$(IMAGE_NAME):$(DOCKER_IMAGE_TAG)'
+        
+    # Verify deployment
+    - task: AzureCLI@2
+      displayName: 'Verify Deployment'
+      inputs:
+        azureSubscription: 'WebAppService'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "Verifying deployment status..."
+          az webapp restart --name $(AZURE_WEBAPP_NAME) --resource-group your-resource-group-name
+          az webapp show --name $(AZURE_WEBAPP_NAME) --resource-group your-resource-group-name --query state
