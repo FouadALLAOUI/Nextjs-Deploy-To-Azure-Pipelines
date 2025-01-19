@@ -64,118 +64,118 @@ stages:
       displayName: 'Publish Build Artifacts'
 
 # Build and push the docker image
-- stage: DockerBuildAndPush
-  displayName: 'Build & Push Docker Image'  # Display name for the stage.
-  dependsOn: validation  # Depends on the validation stage.
-  jobs:
-  - job: Build_And_Push_Docker_Image  # Job for building and pushing Docker image.
-    displayName: 'Build and Push Docker Image'  # Display name for the job.
-    steps:
-    - script: |
-        echo "Building Docker Image..."
-        docker build --no-cache -t $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) .
-      displayName: 'Build Docker Image'  # Display name for the build step.
-
-    - script: |
-        echo "Listing Docker Images..."
-        docker images
-      displayName: 'List Docker Images'  # Display name for the image listing step.
-
-    - script: |
-        echo "Tagging Docker Image for DockerHub..."
-        docker tag $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) $(DOCKERHUB_USER)/$(IMAGE_NAME):$(DOCKER_IMAGE_TAG)
-        docker tag $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) $(DOCKERHUB_USER)/$(IMAGE_NAME):latest
-      displayName: 'Tag Docker Image'
-
-    - script: |
-        echo "Listing Docker Images..."
-        docker images
-      displayName: 'List Docker Images'  # Display name for the image listing step.
-
-    - task: Docker@2
-      displayName: 'Push Docker Image to DockerHub'
-      inputs:
-        containerRegistry: 'DockerHub'  # Name of your DockerHub service connection.
-        repository: '$(DOCKERHUB_USER)/$(IMAGE_NAME)'  # DockerHub repository name.
-        command: 'push'
-        tags: |
-          $(DOCKER_IMAGE_TAG)
-
-    - task: Docker@2
-      displayName: 'Push Docker Image to DockerHub with latest tag'
-      inputs:
-        containerRegistry: 'DockerHub'  # Name of your DockerHub service connection.
-        repository: '$(DOCKERHUB_USER)/$(IMAGE_NAME)'  # DockerHub repository name.
-        command: 'push'
-        tags: |
-          latest
-
-    - script: |
-        echo "Removing old Docker images..."
-        docker rmi -f $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) || echo "No old image found."
-      displayName: 'Clean Up Old Docker Images'  # Display name for the cleanup step.
-
-    - script: |
-        echo "Docker image $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) successfully built and pushed."
-      displayName: 'Success Notification'  # Display name for logging success.
-
-    #- script: |
-    #    echo "Building Docker Image..."
-    #    docker build --no-cache -t $(ACR_NAME).azurecr.io/$(IMAGE_NAME):$(DOCKER_IMAGE_TAG) .
-    #  displayName: 'Build Docker Image for ACR'
-    
-    - script: |
-        echo "Listing Docker Images..."
-        docker images
-      displayName: 'List Docker Images'  # Display name for the image listing step.
-
-    #- task: Docker@2
-    #  displayName: 'Push Docker Image to ACR'
-    #  inputs:
-    #    containerRegistry: 'AzureContainerRegistry'  # Name of your ACR service connection.
-    #    repository: '$(ACR_NAME).azurecr.io/$(IMAGE_NAME)'  # ACR repository name.
-    #    command: 'push'
-    #    tags: |
-    #      $(DOCKER_IMAGE_TAG)
-
-  - job:
-    dependsOn: Build_And_Push_Docker_Image
-    displayName: 'Clean Up Docker Images & Cache'
-    steps:
-    - script: |
-        # Verify the Docker build cache 
-        echo "Re-Checking Docker build cache..."
-        docker system df
-
-        # Force remove the Docker build cache
-        echo "Removing Docker build cache..."
-        docker system prune -a -f
-        docker image prune -a -f
-        docker images 
-
-        # Verify the Docker build cache 
-        echo "Re-Checking Docker build cache..."
-        docker system df
-      displayName: 'Check Docker build cache'
+#- stage: DockerBuildAndPush
+#  displayName: 'Build & Push Docker Image'  # Display name for the stage.
+#  dependsOn: validation  # Depends on the validation stage.
+#  jobs:
+#  - job: Build_And_Push_Docker_Image  # Job for building and pushing Docker image.
+#    displayName: 'Build and Push Docker Image'  # Display name for the job.
+#    steps:
+#    - script: |
+#        echo "Building Docker Image..."
+#        docker build --no-cache -t $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) .
+#      displayName: 'Build Docker Image'  # Display name for the build step.
+#
+#    - script: |
+#        echo "Listing Docker Images..."
+#        docker images
+#      displayName: 'List Docker Images'  # Display name for the image listing step.
+#
+#    - script: |
+#        echo "Tagging Docker Image for DockerHub..."
+#        docker tag $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) $(DOCKERHUB_USER)/$(IMAGE_NAME):$(DOCKER_IMAGE_TAG)
+#        docker tag $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) $(DOCKERHUB_USER)/$(IMAGE_NAME):latest
+#      displayName: 'Tag Docker Image'
+#
+#    - script: |
+#        echo "Listing Docker Images..."
+#        docker images
+#      displayName: 'List Docker Images'  # Display name for the image listing step.
+#
+#    - task: Docker@2
+#      displayName: 'Push Docker Image to DockerHub'
+#      inputs:
+#        containerRegistry: 'DockerHub'  # Name of your DockerHub service connection.
+#        repository: '$(DOCKERHUB_USER)/$(IMAGE_NAME)'  # DockerHub repository name.
+#        command: 'push'
+#        tags: |
+#          $(DOCKER_IMAGE_TAG)
+#
+#    - task: Docker@2
+#      displayName: 'Push Docker Image to DockerHub with latest tag'
+#      inputs:
+#        containerRegistry: 'DockerHub'  # Name of your DockerHub service connection.
+#        repository: '$(DOCKERHUB_USER)/$(IMAGE_NAME)'  # DockerHub repository name.
+#        command: 'push'
+#        tags: |
+#          latest
+#
+#    - script: |
+#        echo "Removing old Docker images..."
+#        docker rmi -f $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) || echo "No old image found."
+#      displayName: 'Clean Up Old Docker Images'  # Display name for the cleanup step.
+#
+#    - script: |
+#        echo "Docker image $(IMAGE_NAME):$(DOCKER_IMAGE_TAG) successfully built and pushed."
+#      displayName: 'Success Notification'  # Display name for logging success.
+#
+#    #- script: |
+#    #    echo "Building Docker Image..."
+#    #    docker build --no-cache -t $(ACR_NAME).azurecr.io/$(IMAGE_NAME):$(DOCKER_IMAGE_TAG) .
+#    #  displayName: 'Build Docker Image for ACR'
+#    
+#    - script: |
+#        echo "Listing Docker Images..."
+#        docker images
+#      displayName: 'List Docker Images'  # Display name for the image listing step.
+#
+#    #- task: Docker@2
+#    #  displayName: 'Push Docker Image to ACR'
+#    #  inputs:
+#    #    containerRegistry: 'AzureContainerRegistry'  # Name of your ACR service connection.
+#    #    repository: '$(ACR_NAME).azurecr.io/$(IMAGE_NAME)'  # ACR repository name.
+#    #    command: 'push'
+#    #    tags: |
+#    #      $(DOCKER_IMAGE_TAG)
+#
+#  - job:
+#    dependsOn: Build_And_Push_Docker_Image
+#    displayName: 'Clean Up Docker Images & Cache'
+#    steps:
+#    - script: |
+#        # Verify the Docker build cache 
+#        echo "Re-Checking Docker build cache..."
+#        docker system df
+#
+#        # Force remove the Docker build cache
+#        echo "Removing Docker build cache..."
+#        docker system prune -a -f
+#        docker image prune -a -f
+#        docker images 
+#
+#        # Verify the Docker build cache 
+#        echo "Re-Checking Docker build cache..."
+#        docker system df
+#      displayName: 'Check Docker build cache'
 
 
 # Publish Image Tag
-- stage: PublishImageTag
-  displayName: 'Publish Image Tag'
-  dependsOn: DockerBuildAndPush
-  jobs:
-  - job: PublishTag
-    displayName: 'Publish Image Tag as Artifact'
-    steps:
-    # Save the image tag to a file
-    - script: |
-        echo $(DOCKER_IMAGE_TAG) > $(Build.ArtifactStagingDirectory)/imageTag.txt
-      displayName: 'Save Image Tag to File'
-
-    # Publish the image tag as an artifact
-    - task: PublishBuildArtifacts@1
-      inputs:
-        pathToPublish: $(Build.ArtifactStagingDirectory)
-        artifactName: 'ImageTag'
-      displayName: 'Publish Image Tag Artifact'
+#- stage: PublishImageTag
+#  displayName: 'Publish Image Tag'
+#  dependsOn: DockerBuildAndPush
+#  jobs:
+#  - job: PublishTag
+#    displayName: 'Publish Image Tag as Artifact'
+#    steps:
+#    # Save the image tag to a file
+#    - script: |
+#        echo $(DOCKER_IMAGE_TAG) > $(Build.ArtifactStagingDirectory)/imageTag.txt
+#      displayName: 'Save Image Tag to File'
+#
+#    # Publish the image tag as an artifact
+#    - task: PublishBuildArtifacts@1
+#      inputs:
+#        pathToPublish: $(Build.ArtifactStagingDirectory)
+#        artifactName: 'ImageTag'
+#      displayName: 'Publish Image Tag Artifact'
 
