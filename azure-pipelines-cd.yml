@@ -33,14 +33,13 @@ stages:
 
     # Deploy to Azure Web App
     - task: AzureRmWebAppDeployment@4
-      displayName: 'Deploy to Azure Web App'
       inputs:
         ConnectionType: 'AzureRM'
         azureSubscription: 'WebAppService'
         appType: 'webApp'
         WebAppName: '$(AZURE_WEBAPP_NAME)'
-        packageForLinux: '$(Pipeline.Workspace)/CI_Pipeline/NextjsBuild'
-        enableCustomDeployment: false
+        packageForLinux: '$(Pipeline.Workspace)/CI_Pipeline/NextjsBuild/app'
+        enableCustomDeployment: true
         DeploymentType: 'zipDeploy'
         StartupCommand: 'cd /home/site/wwwroot && npm install --production && npm start'
 
