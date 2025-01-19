@@ -35,7 +35,7 @@ stages:
       displayName: 'Download Build Artifacts'
 
     # Deploy to Azure Web App
-    - task: AzureWebAppDeployment@4
+    - task: AzureRmWebAppDeployment@4
       displayName: 'Deploy to Azure Web App'
       inputs:
         ConnectionType: 'AzureRM'
