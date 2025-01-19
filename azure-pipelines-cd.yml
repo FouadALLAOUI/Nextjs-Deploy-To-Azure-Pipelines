@@ -39,12 +39,12 @@ stages:
       displayName: 'Deploy to Azure Web App'
       inputs:
         ConnectionType: 'AzureRM'
-        azureSubscription: 'WebAppService'  # Your Azure service connection name
+        azureSubscription: 'WebAppService'
         appType: 'webApp'
         WebAppName: '$(AZURE_WEBAPP_NAME)'
         packageForLinux: '$(Pipeline.Workspace)/CI_Pipeline/NextjsBuild'
-        enableCustomDeployment: true
-        DeploymentType: 'webDeploy'
+        enableCustomDeployment: false
+        DeploymentType: 'zipDeploy'
         StartupCommand: 'npm start'
 
     # Download the image tag artifact from CI pipeline
