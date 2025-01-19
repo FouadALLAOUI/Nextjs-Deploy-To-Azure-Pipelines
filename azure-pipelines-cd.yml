@@ -43,7 +43,7 @@ stages:
           IMAGE_TAG=$(cat $(Pipeline.Workspace)/CI_Pipeline/ImageTag/imageTag.txt)
           echo "##vso[task.setvariable variable=DOCKER_IMAGE_TAG]$IMAGE_TAG"
           echo $(DOCKER_IMAGE_TAG)
-          
+
     # Deploy to Azure Web App
     - task: AzureWebAppContainer@1
       displayName: 'Deploy to Azure Web App'
@@ -52,14 +52,3 @@ stages:
         appName: '$(AZURE_WEBAPP_NAME)'
         containers: '$(DOCKERHUB_USER)/$(IMAGE_NAME):$(DOCKER_IMAGE_TAG)'
         
-    # Verify deployment
-    - task: AzureCLI@2
-      displayName: 'Verify Deployment'
-      inputs:
-        azureSubscription: 'WebAppService'
-        scriptType: 'bash'
-        scriptLocation: 'inlineScript'
-        inlineScript: |
-          echo "Verifying deployment status..."
-          az webapp restart --name $(AZURE_WEBAPP_NAME) --resource-group your-resource-group-name
-          az webapp show --name $(AZURE_WEBAPP_NAME) --resource-group your-resource-group-name --query state
